@@ -1,0 +1,68 @@
+
+******  SERVICOS E REQUISICOES  ******
+
+#### 1 - SERVICOS PARA TABELA DE EMPRESAS: #####
+
+
+A - Adiciona uma Nova Empresa  (Method POST), Caso o id da Empresa enviada seja 0 adiciona uma nova . Caso o 
+id seja diferente de 0 atualiza os dados enviados. 
+
+http://localhost:8080/service-rest/empresa
+
+content-type : application/json
+
+ 
+{
+"id":null,
+"nomeApp":"EmpresaApp",
+"nome":"EmpresaNome",
+"cnpj":"13256984",
+"idioma":"Portugues",
+"timezone":"pt/BR",
+"classificacao":"Livre",
+"numeroLicensas":10,
+"imagem":"C:/Desktop/imagem.png",
+"nomeAdministrador":"Leandro Prates",
+"emailAdministrador":"lprates@springrest.com.br",
+"passwordAdministrador":"123456",
+"planoId":1,
+"deficiente":false,
+"ativo":true
+
+}
+
+
+B - Busca Empresas Cadastrados na Tabela ( Method GET) 
+ 
+ 
+http://localhost:8080/service-rest/empresa?limitInicial=0&limitFinal=20
+ 
+
+C - Busca Empresas Cadastrados pelo ID Informado na Tabela ( Method GET) 
+ 
+ 
+http://localhost:8080/service-rest/empresa/1 
+
+
+
+D - Delete Empresa pelo id informado ( Method DELETE) 
+
+
+http://localhost:8080/service-rest/empresa/1
+
+
+E - Desabilita Empresa pelo id informado ( Method DELETE) 
+
+http://localhost:8080/service-rest/empresa/disable/1 
+
+
+
+F - Habilita Empresa pelo id informado ( Method GET) 
+
+http://localhost:8080/service-rest/empresa/enable/1 
+
+
+G - Upload do LOGO para a Empresa ID 12. ( METHOD POST enctype="multipart/form-data" ) 
+
+http://localhost:8080/service-rest/empresa/12/upload
+

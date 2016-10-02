@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="MyApp" packages="">
+    
+
+    <!-- Diretorio do Log e Nome do LOG -->    
+    <Properties>
+        <Property name="baseDir">C:/Users/lprates/Desktop/projeto/logs/</Property>
+        <Property name="logName">projetoSpring-Rest-JDBC-Security-Configuracao-WebXML.log</Property>
+    </Properties>
+    
+    
+  <Appenders>
+    <!-- Escreve no Arquivo -->  
+    <RollingFile name="RollingFile" fileName="${baseDir}/${logName}"
+                 filePattern="${baseDir}/${logName}-%d{dd-MM-yyyy}-%i.log.gz" immediateFlush="false" >
+      <PatternLayout>
+        <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="250 MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+    
+    <!-- Escreve no console -->
+    <Console name="STDOUT" target="SYSTEM_OUT">
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>    
+  </Appenders>
+
+  <Loggers>
+    <Root level="trace">
+      <AppenderRef ref="RollingFile"/>
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+
+  </Loggers>
+</Configuration>
