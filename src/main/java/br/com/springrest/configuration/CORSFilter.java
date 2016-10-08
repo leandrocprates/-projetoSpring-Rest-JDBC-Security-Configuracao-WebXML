@@ -12,6 +12,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+/**
+ * Explanation :    About CORS problem with angularjs 
+ * 
+ * http://stackoverflow.com/questions/23786722/angularjs-http-cors-with-backend-in-spring-rest-security/39938045#39938045
+ * 
+ * https://gist.github.com/zeroows/80bbe076d15cb8a4f0ad
+ * 
+ * 
+ * 
+ * @author lprates
+ */
+
+
 public class CORSFilter implements Filter {
 
         public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
