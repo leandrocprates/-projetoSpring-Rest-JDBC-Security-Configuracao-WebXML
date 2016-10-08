@@ -25,7 +25,6 @@ content-type : application/json
 "nomeAdministrador":"Leandro Prates",
 "emailAdministrador":"lprates@springrest.com.br",
 "passwordAdministrador":"123456",
-"planoId":1,
 "deficiente":false,
 "ativo":true
 

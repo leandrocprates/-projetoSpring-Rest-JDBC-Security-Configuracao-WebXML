@@ -10,21 +10,9 @@
 	http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
         <!-- Regras de Acesso -->
-        <http>
+        <http use-expressions="true">
             <csrf disabled="true"/>
-            <!--<intercept-url pattern="/" access="permitAll" />-->
-            <intercept-url pattern="/login**" access="permitAll" />
-            <intercept-url pattern="/client**" access="isAuthenticated()" />
-            <intercept-url pattern="/empresa**" access="isAuthenticated()" />
-            <intercept-url pattern="/planoExpediente**" access="isAuthenticated()" />
-            <intercept-url pattern="/plano**" access="isAuthenticated()" />
-            <intercept-url pattern="/usuario**" access="isAuthenticated()" />
-            <intercept-url pattern="/perfil**" access="isAuthenticated()" />
-            <intercept-url pattern="/faq**" access="isAuthenticated()" />
-            <intercept-url pattern="/motivo**" access="isAuthenticated()" />
-            <intercept-url pattern="/respostaPronta**" access="isAuthenticated()" />
-            <intercept-url pattern="/mensagemAutomatica**" access="isAuthenticated()" />
-            <intercept-url pattern="/departamento**" access="isAuthenticated()" />
+            <intercept-url pattern="/empresa*" access="hasRole('ADMIN')" />
             <intercept-url pattern="/message**" access="isAuthenticated()" />
             <intercept-url pattern="/teste**" access="hasRole('ADMIN')" />
             <http-basic />
