@@ -1,0 +1,92 @@
+<!doctype html>
+<html ng-app="mainApp">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+  </head>
+  <body>
+    <div ng-controller="studentController">
+      <label>Name:</label>
+      <input type="text" ng-model="yourName" placeholder="Enter a name here">
+      <hr>
+      <h1>Hello {{yourName}}!</h1>
+	  
+	  
+	  <button ng-click="buscaempresa()" >busca empresa</button>
+	  
+	  
+		<table>
+            <tr>
+               <th>id</th>
+               <th>nome</th>
+               <th>cnpj</th>
+            </tr>
+         
+            <tr ng-repeat = "empresa in listaEmpresas">
+               <td>{{ empresa.id }}</td>
+               <td>{{ empresa.nome }}</td>
+               <td>{{ empresa.cnpj }}</td>
+            </tr>
+         </table>	  
+	  
+    </div>
+  
+  
+
+	<script>
+         var mainApp = angular.module("mainApp", []);
+         
+		 
+		mainApp.factory('httpRequestInterceptor', function () {
+		  return {
+			request: function (config) {
+
+			  var encodedString = btoa("lprates:lprates");
+			  config.headers.Authorization = 'Basic '+encodedString;
+			  
+			  return config;
+			}
+		  };
+		});		 
+		 
+
+		mainApp.config(['$httpProvider',function ($httpProvider) {
+		  $httpProvider.interceptors.push('httpRequestInterceptor');
+		}]);
+
+		 
+		 
+         mainApp.controller('studentController', function($scope,$http) {
+		 
+		 
+
+			$scope.buscaempresa = function(){
+		 
+					//url = 'http://localhost:8080/service-whatsac/empresa' ; 
+					url = 'http://localhost:8080/service-rest/empresa' ; 
+					
+					$http.get(url)
+						.success( function(response) {
+							console.log(response);
+							$scope.listaEmpresas = response;
+						}).error(function (data, status, headers, config) {
+								console.log(data);
+								
+						});					
+				 
+			}
+		 
+		 
+		 });
+	</script>
+  
+  
+  
+  </body>
+  
+  
+  
+  
+  
+  
+  
+</html>
