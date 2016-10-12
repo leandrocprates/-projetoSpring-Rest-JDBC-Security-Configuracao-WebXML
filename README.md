@@ -211,6 +211,77 @@ file.location=C:/Users/lprates/Desktop/projeto/upload/
 ```
 
 
+A configuracao do projeto é feita via **web.xml** onde sao carregados os arquivos de configuracao Filtros e Servlets necessarios para o funcionamento do projeto. 
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <!-- Inicializacao do Spring e Dados de Upload de Arquivo -->
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>
+                org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring-beans.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+        <multipart-config>
+            <max-file-size>5242880</max-file-size>
+            <max-request-size>20971520</max-request-size>
+            <file-size-threshold>0</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    <!--Configuracoes de Acesso Spring Security -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+                /WEB-INF/spring-security.xml,/WEB-INF/spring-beans.xml
+        </param-value>
+    </context-param>
+    <!-- Deve vir sempre antes do filtro do Spring para tratar CORS -->
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>br.com.springrest.configuration.CORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+    <session-config>
+        <session-timeout>
+            900
+        </session-timeout>
+    </session-config>
+</web-app>
+
+```
+
+
+
+
+
+
 
 
 
