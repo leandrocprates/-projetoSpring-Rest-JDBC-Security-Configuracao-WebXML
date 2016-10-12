@@ -190,7 +190,7 @@ de acesso e configura o Objecto de Transacao no Spring.
 
 
 
-O pacote **br.com.springTeste.configuration** faz a configuracao do **Spring MVC** para carregar o arquivo de properties.
+O pacote **br.com.springTeste.configuration** faz a configuracao do **Spring MVC** para carregar o arquivo de properties **META-INF/springdb.properties**. 
 
 
 ```javascript
@@ -201,6 +201,18 @@ public class HelloWorldConfiguration {
 
 }
 ```
+
+O arquivo  **springdb.properties**  abaixo é carregado e acessado pelo classe **EmpresaRestController.java** para efetuar o carregamento de imagens no diretorio especificado. 
+
+```javascript
+#Diretorio onde será armazenado os logos da Empresa 
+file.location=C:/Users/lprates/Desktop/projeto/upload/
+
+```
+
+
+
+
 
 
 No pacote **br.com.springTeste.controller** ficam os serviços REST que serão chamados via interface ou qualquer client REST que queira utilizar.  A classe **EmpresaRestController.java** representa um modelo de Serviço REST com seus serviços utilizando a biblioteca do Spring. 
