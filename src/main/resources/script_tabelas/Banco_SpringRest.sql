@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS `tb_empresa` (
 DELETE FROM `tb_empresa`;
 /*!40000 ALTER TABLE `tb_empresa` DISABLE KEYS */;
 INSERT INTO `tb_empresa` (`id`, `nomeApp`, `nome`, `cnpj`, `idioma`, `timezone`, `classificacao`, `isDeficiente`, `numeroLicensas`, `imagem`, `nomeAdministrador`, `emailAdministrador`, `passwordAdministrador`, `isAtivo`, `planoId`) VALUES
-	(20, 'EmpresaApp', 'EmpresaNome', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Users/lprates/Desktop/projeto/upload/linux.jpg', 'Leandro Prates', 'lprates2@peopleway.com.br', '123456', 1, 1),
-	(21, 'EmpresaApp2', 'EmpresaNome2', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Desktop/imagem.png', 'Leandro Prates', 'lprates@peopleway.com.br', '123456', 1, 1),
-	(23, 'EmpresaApp2', 'EmpresaNome2', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Users/lprates/Desktop/projeto/upload/linux.jpg', 'Leandro Prates', 'lprates@peopleway.com.br', '123456', 1, NULL),
+	(20, 'EmpresaApp', 'EmpresaNome', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Users/lprates/Desktop/projeto/upload/linux.jpg', 'Leandro Prates', 'lprates2@ig.com.br', '123456', 1, 1),
+	(21, 'EmpresaApp2', 'EmpresaNome2', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Desktop/imagem.png', 'Leandro Prates', 'lprates@ig.com.br', '123456', 1, 1),
+	(23, 'EmpresaApp2', 'EmpresaNome2', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Users/lprates/Desktop/projeto/upload/linux.jpg', 'Leandro Prates', 'lprates@ig.com.br', '123456', 1, NULL),
 	(25, 'EmpresaApp7', 'EmpresaNome7', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Desktop/imagem.png', 'Leandro Prates', 'lprates7@springrest.com.br', '123456', 0, NULL),
 	(26, 'EmpresaApp7', 'EmpresaNome7', '13256984', 'Portugues', 'pt/BR', 'Livre', 0, 10, 'C:/Desktop/imagem.png', 'Leandro Prates', 'lprates7@springrest.com.br', '123456', 0, NULL);
 /*!40000 ALTER TABLE `tb_empresa` ENABLE KEYS */;
