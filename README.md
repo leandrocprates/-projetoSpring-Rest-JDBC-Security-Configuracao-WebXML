@@ -62,7 +62,7 @@ As Autenticacoes aos serviços REST serão realizadas pelo Spring Security e ser
 onde serao definidos os perfis que podem fazer acesso aos serviços e as querys para autenticacao no banco de dados.
 
 
-```javascript
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
 	xmlns:beans="http://www.springframework.org/schema/beans"
@@ -115,7 +115,7 @@ e inicializados.
 O Bean **multipartResolver** é utilizados para realizar o Upload De Arquivos(png, jpeg, etc.. ) 
 
 
-```javascript
+```xml
 
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -148,7 +148,7 @@ O Bean **multipartResolver** é utilizados para realizar o Upload De Arquivos(pn
 Arquivo **META-INF/Spring-DataSource.xml**  com acesso ao Banco de Dados descrido abaixo possui as configuracoes padrao 
 de acesso e configura o Objecto de Transacao no Spring. 
 
-```javascript
+```xml
 
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
