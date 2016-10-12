@@ -60,6 +60,8 @@ public class EmpresaRestController {
 
         List<EmpresaBean> listaEmpresas = null ; 
         
+        logger.debug("Location {}" , env.getProperty("file.location"));
+        
         logger.debug("Valor Inicial: {} , Valor Final: {}" , limitInicial , limitFinal );
         
         EmpresaDAO empresaDao = new EmpresaDAO(dataSource);
