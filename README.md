@@ -58,153 +58,148 @@ No pacote **br.com.springTeste.query** estao as querys que serao executadas no b
 
 
 
-As Autenticacoes aos serviços REST serão realizadas pelo Spring Security e serão configuradas no pacote **br.com.springTeste.security**.
-A classe **CustomBasicAuthenticationEntryPoint.java** configura uma resposta padrao no caso do usuario tentar uma autenticacao e nao for autorizado a acessar um recurso. 
-
-```javascript
-public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
-
-    @Override
-    public void commence(final HttpServletRequest request, 
-    		final HttpServletResponse response, 
-    		final AuthenticationException authException) throws IOException, ServletException {
-    	
-    	response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    	response.addHeader("WWW-Authenticate", "Basic realm=" + getRealmName() + "");
-        
-        PrintWriter writer = response.getWriter();
-        writer.println("HTTP Status 401 : " + authException.getMessage());
-    }
-    
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        setRealmName("MY_TEST_REALM");
-        super.afterPropertiesSet();
-    }
-}
-```
-
-
-
-A classe **SecurityConfiguration.java** configura as permissoes de acesso de acordo com o perfil do Usuario. Faz a autenticacao do usuario no Banco de Dados . E ainda possui uma funcao chamada **public static UserAuthentication getPrincipal()** que retorna o usuario autenticado no Sistema com o seu Perfil de Acesso. 
-
-
+As Autenticacoes aos serviços REST serão realizadas pelo Spring Security e serão configuradas pelo arquivo **WEB-INF/spring-security.xml**, 
+onde serao definidos os perfis que podem fazer acesso aos serviços e as querys para autenticacao no banco de dados.
 
 
 ```javascript
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd        
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
-@Configuration
-@EnableWebSecurity
-@PropertySource("/META-INF/springdb.properties")
-@ImportResource("/META-INF/Spring-DataSource.xml")
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+        <!-- Regras de Acesso -->
+        <http use-expressions="true">
+            <csrf disabled="true"/>
+            <intercept-url pattern="/empresa*" access="hasRole('ADMIN')" />
+            <intercept-url pattern="/message**" access="isAuthenticated()" />
+            <intercept-url pattern="/teste**" access="hasRole('ADMIN')" />
+            <http-basic />
+            <logout />
+        </http>
 
-	@Autowired
-	DataSource dataSource;
+        <!-- Busca Autorizacoes do Usuario -->
+        <authentication-manager>
+            <authentication-provider>
+                <jdbc-user-service data-source-ref="dataSource"
+                    users-by-username-query="
+                            SELECT email,password, isAtivo FROM TB_Usuario WHERE email=? ; "
 
-	@Inject
-	Environment env;
-        
-	private static String REALM = "MY_TEST_REALM";
-	private static final Logger logger = LogManager.getLogger(SecurityConfiguration.class);
-
-	@Autowired
-	public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-		// auth.inMemoryAuthentication().withUser("bill").password("abc123").roles("ADMIN");
-		// auth.inMemoryAuthentication().withUser("tom").password("abc123").roles("USER");
-	}
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		logger.debug("*****Start Service*****");
-		http.csrf().disable().authorizeRequests()
-				.antMatchers("/user/**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/login**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/perfil**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/usuario**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/empresa**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/client**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/plano**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/message**").access("hasRole('ROLE_ADMIN')")
-				.antMatchers("/teste**").access("hasRole('ROLE_ADMIN')").and().httpBasic().realmName(REALM)
-				.authenticationEntryPoint(getBasicAuthEntryPoint());
-
-	}
-
-	@Bean
-	public CustomBasicAuthenticationEntryPoint getBasicAuthEntryPoint() {
-		return new CustomBasicAuthenticationEntryPoint();
-	}
-
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
-	}
-
-	/*
-	 * @Bean public DriverManagerDataSource dataSource() {
-	 * 
-	 * logger.debug("Banco de dados ; "+ env.getProperty("url")); logger.debug(
-	 * "Usuario : "+ env.getProperty("user")); logger.debug("Senha : "+
-	 * env.getProperty("password"));
-	 * 
-	 * DriverManagerDataSource driverManagerDataSource = new
-	 * DriverManagerDataSource();
-	 * driverManagerDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-	 * driverManagerDataSource.setUrl(env.getProperty("url"));
-	 * driverManagerDataSource.setUsername(env.getProperty("user"));
-	 * driverManagerDataSource.setPassword(env.getProperty("password")); return
-	 * driverManagerDataSource; }
-	 */
-
-	@Autowired
-	public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource).usersByUsernameQuery(QueryUsuario.queryUserAuthentication()).authoritiesByUsernameQuery(QueryUsuario.queryUserAndProfileAuthentication());
-
-	}
-        
-        /**
-         * Retorna o Usuario autenticado no sistema
-         * @return 
-         */
-        public static UserAuthentication getPrincipal(){
-            
-            UserAuthentication userAuthentication = new UserAuthentication();
-            
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-            if ( authentication!= null ){
-                userAuthentication.setNome(authentication.getName());
-                userAuthentication.setPerfil(authentication.getAuthorities().toString());
-                userAuthentication.setAutenticado(authentication.isAuthenticated());
+                    authorities-by-username-query="
+                            SELECT TB_Usuario.email, TB_Perfil.nome  
+                                  FROM TB_Usuario INNER JOIN TB_Perfil ON 
+                                     TB_Usuario.perfilId = TB_Perfil.id 
+                            WHERE TB_Usuario.email= ? ; "
+                />
                 
-                logger.info(" Usuario autenticado : {} " , userAuthentication.getNome()  ); 
-                logger.info(" Authorities : {} " , userAuthentication.getPerfil()  ); 
-                logger.info(" isAuthenticated : {} " , userAuthentication.isAutenticado()  ); 
-            }
-            
-            return userAuthentication;
-            
-        }
-
-}
+            </authentication-provider>
+        </authentication-manager>
+        
+        
+</beans:beans>
 
 ```
 
 
 
-O pacote **br.com.springTeste.configuration** faz a configuracao do **Spring MVC** por meio de anotacoes na classe **HelloWorldConfiguration.java**
+O arquivo **WEB-INF/spring-beans.xml** configura o Spring Core importando o arquivo **META-INF/Spring-DataSource.xml** 
+que possui as configuraçoes do Banco de Dados. E varre os pacotes **br.com.springrest** para identificar Anotacoes
+do Spring e inicializar os objectos. A anotacao **<mvc:annotation-driven />** faz com que os Serviços Rest sejam identificados 
+e inicializados. 
+O Bean **multipartResolver** é utilizados para realizar o Upload De Arquivos(png, jpeg, etc.. ) 
+
+
+```javascript
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                        http://www.springframework.org/schema/mvc 
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/context 
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+ 
+    
+    <import resource="../META-INF/Spring-DataSource.xml" />
+    
+    <context:component-scan base-package="br.com.springrest" />
+ 
+    <mvc:annotation-driven />
+    
+    <!-- Upload de Arquivo -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+    
+ 
+</beans>
+
+```
+
+
+Arquivo **META-INF/Spring-DataSource.xml**  com acesso ao Banco de Dados descrido abaixo possui as configuracoes padrao 
+de acesso e configura o Objecto de Transacao no Spring. 
+
+```javascript
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                            http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+                            http://www.springframework.org/schema/context 
+                            http://www.springframework.org/schema/context/spring-context-4.3.xsd
+                            http://www.springframework.org/schema/tx
+                            http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+    
+    
+    
+        <!-- Enable Annotation based Declarative Transaction Management -->
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+    
+        <!-- Creating TransactionManager Bean, since JDBC we are creating of type 
+                DataSourceTransactionManager -->
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+                <property name="dataSource" ref="dataSource" />
+        </bean>    
+
+        <!-- Initialization for data source -->
+        <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://localhost:3306/springrest"/>
+            <property name="username" value="root"/>
+            <property name="password" value="root"/>
+        </bean>
+    
+    
+
+</beans>
+```
+
+
+
+
+
+O pacote **br.com.springTeste.configuration** faz a configuracao do **Spring MVC** para carregar o arquivo de properties.
 
 
 ```javascript
 @Configuration
-@EnableWebMvc
-@ComponentScan(basePackages = "br.com.springTeste")
+@PropertySource("/META-INF/springdb.properties")
 public class HelloWorldConfiguration {
 	
 
 }
-
 ```
 
 
